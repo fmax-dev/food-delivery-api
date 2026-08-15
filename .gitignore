@@ -6,3 +6,4 @@ INSTRUCTIONS.md
 .venv
 .env
 __pycache__
+.idea/
