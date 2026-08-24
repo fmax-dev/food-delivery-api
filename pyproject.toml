@@ -12,8 +12,3 @@ dependencies = [
     "scalar-fastapi>=1.8.2",
     "sqlmodel>=0.0.39",
 ]
-
-[tool.uv]
-# Project lives inside OneDrive, which uses cloud-file placeholders that
-# can't be hardlinked to uv's cache (outside OneDrive). Copy instead.
-link-mode = "copy"
