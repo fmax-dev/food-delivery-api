@@ -15,7 +15,7 @@ class RestaurantRead(RestaurantBase):
     created_at: datetime
 
 
-class Restaurant(RestaurantBase):
+class RestaurantCreate(RestaurantBase):
     pass
 
 
