@@ -91,7 +91,7 @@ class OrderService:
         new_order = Order(
             **order_create.model_dump(),
             status = OrderStatus.placed,
-            estimated_delivery = datetime.now() + timedelta(minutes=35)
+            estimated_delivery = datetime.now() + timedelta(minutes=35)  # noqa: DTZ005
         )
 
         # Adding the new object to the tracking session
