@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from sqlalchemy import select
+from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from backend.models.order import Order
@@ -12,11 +12,11 @@ class RestaurantService:
         self.session = session
 
     # Get a Restaurant
-    async def get(self, id: int) -> Restaurant | None:
+    async def get_restaurant(self, id: int) -> Restaurant | None:
         return await self.session.get(Restaurant, id)
 
     # List a Restaurant
-    async def list_restaurant(self, 
+    async def list_restaurants(self,
     cuisine_type: str | None = None,
     is_open: bool | None = None,
     name_search: str | None = None,
@@ -43,6 +43,7 @@ class RestaurantService:
     # Add a Restaurant
     async def add_restaurant(self, restaurant_create: RestaurantCreate
     ) -> Restaurant:
+        # Convert Pydantic data into an unpacked dictionary for the SQLAlchemy model
         new_restaurant = Restaurant(**restaurant_create.model_dump())
 
         # Adding the new object to the tracking session
@@ -60,23 +61,23 @@ class RestaurantService:
     update_data: dict
     ) -> Restaurant:
         # Checking if the Restaurant exists
-        result = await self.session.get(Restaurant, id)
+        restaurant = await self.session.get(Restaurant, id)
 
         # Raise an HTTPExceptio if doesn't exist
-        if not result:
+        if restaurant is None:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail="Cannot update a Restaurant that doesn't exist!"
             )
 
         # Otherwise we proceed
-        result.sqlmodel_update(update_data)
+        restaurant.sqlmodel_update(update_data)
 
         # Commit and refresh db
         await self.session.commit()
-        await self.session.refresh(result)
+        await self.session.refresh(restaurant)
 
-        return result
+        return restaurant
 
     # Delete a Restaurant
     async def delete_restaurant(self, id: int) -> None:
@@ -86,7 +87,7 @@ class RestaurantService:
         # Raise an HTTPException if doesn't exist
         if not restaurant:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail="Cannot delete a Restaurant that doesn't exist!"
             )
 
