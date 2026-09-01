@@ -1,8 +1,23 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from scalar_fastapi import get_scalar_api_reference
 
-app = FastAPI()
+from backend.api.router import api_router
+from backend.db.session import create_db_tables
+
+
+@asynccontextmanager
+async def lifespan_handler(app: FastAPI):
+    await create_db_tables()
+    yield
+
+app = FastAPI(lifespan=lifespan_handler)
+
+
+app.include_router(api_router)
+
 
 # root
 @app.get("/")

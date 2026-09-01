@@ -93,9 +93,9 @@ class RestaurantService:
 
         # If exists, we check if it has orders
         orders_stmt = select(Order).where(Order.restaurant_id == id).limit(1)
-        existing_order = (await self.session.exec(orders_stmt)).first()
+        has_order = (await self.session.exec(orders_stmt)).first()
 
-        if existing_order is not None:
+        if has_order is not None:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Cannot delete a Restaurant with existing orders"
