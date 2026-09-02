@@ -1,8 +1,6 @@
-from __future__ import annotations
-
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -22,7 +20,7 @@ class Order(SQLModel, table=True):
 
     id: int = Field(default=None, primary_key=True)
     restaurant_id: int = Field(foreign_key="restaurant.id")
-    restaurant: Restaurant | None = Relationship(back_populates="orders")
+    restaurant: Optional["Restaurant"] = Relationship(back_populates="orders")
     customer_name: str
     items_summary: str
     total_price: float = Field(ge=0, le=500)

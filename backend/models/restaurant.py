@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -18,4 +16,4 @@ class Restaurant(SQLModel, table=True):
     is_open: bool = Field(default=True)
     rating: float | None = Field(default=None, ge=0, le=5)
     created_at: datetime = Field(default_factory=datetime.now)
-    orders: list[Order] = Relationship(back_populates="restaurant")
+    orders: list["Order"] = Relationship(back_populates="restaurant")
