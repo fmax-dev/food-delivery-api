@@ -1,0 +1,256 @@
+/* ============================================================
+   Food Delivery — design system (v1, server-rendered pages)
+
+   Plain CSS custom properties. No build step, no framework, no
+   external fonts — deletable in one `rm -rf static/` when the
+   frontend moves to React.
+   ============================================================ */
+
+:root {
+  /* — Colour: neutral chrome ————————————————————————————— */
+  --paper:       #fdfdfc;  /* page background — barely-warm off-white */
+  --surface:     #f2f2ef;  /* table head, row hover, inset panels */
+  --ink:         #1c1b19;  /* primary text — warm near-black */
+  --ink-dim:     #78756e;  /* metadata, column labels, secondary text */
+  --rule:        #e6e4df;  /* hairlines and borders */
+  --accent:      #3a5a40;  /* interactive ONLY: links, focus, active nav */
+  --accent-weak: #eef1ee;  /* accent tint — row hover, active surfaces */
+
+  /* — Colour: order status (the only place hue is allowed) ——
+     A rough progress arc: neutral -> warm -> in-motion -> resolved.
+     `delivered` reuses --accent so "done" and "the brand" are one colour. */
+  --status-placed:           #78756e;
+  --status-preparing:        #b45309;
+  --status-out_for_delivery: #1d4ed8;
+  --status-delivered:        #3a5a40;
+  --status-cancelled:        #a62a2a;
+
+  /* — Type: one family, differentiated by weight + tracking —— */
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+  --text:    0.9375rem;  /* 15px body */
+  --text-sm: 0.78rem;    /* ~12.5px metadata */
+  --text-h1: 1.5rem;
+  --text-h2: 1.0625rem;
+  --leading: 1.6;
+
+  /* — Space: 4px-based scale ———————————————————————————— */
+  --s1: 0.25rem;  --s2: 0.5rem;  --s3: 0.75rem;
+  --s4: 1rem;     --s5: 1.5rem;  --s6: 2rem;    --s7: 3rem;
+
+  /* — Shape: two radii, tied to hierarchy ————————————————— */
+  --radius:      8px;    /* containers */
+  --radius-pill: 999px;  /* status pills */
+
+  --content-width: 60rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:       #1a1917;
+    --surface:     #232220;
+    --ink:         #eceae5;
+    --ink-dim:     #a09c93;
+    --rule:        #333230;
+    --accent:      #9db99f;
+    --accent-weak: #262b26;
+  }
+}
+
+/* — Reset / base ———————————————————————————————————————— */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--text)/var(--leading) var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p, ul, ol, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+
+h1 {
+  font-size: var(--text-h1);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.011em;
+}
+
+h2 {
+  font-size: var(--text-h2);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* — Site header ————————————————————————————————————————— */
+.site-header {
+  display: flex;
+  align-items: center;
+  gap: var(--s6);
+  height: 56px;
+  padding: 0 var(--s5);
+  border-bottom: 1px solid var(--rule);
+}
+
+.site-header__brand {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.site-nav { display: flex; gap: var(--s4); }
+
+.site-nav a {
+  color: var(--ink-dim);
+  padding: var(--s1) 0;
+  border-bottom: 2px solid transparent;
+}
+.site-nav a:hover { color: var(--ink); text-decoration: none; }
+.site-nav a[aria-current="page"] {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+/* — Page shell ————————————————————————————————————————— */
+.page {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--s7) var(--s5);
+}
+
+.page-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s3);
+  margin-bottom: var(--s5);
+}
+
+.count {
+  font-size: var(--text-sm);
+  color: var(--ink-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.muted { color: var(--ink-dim); }
+
+.back-link {
+  display: inline-block;
+  font-size: var(--text-sm);
+  margin-bottom: var(--s4);
+}
+
+/* Restaurant header spec: cuisine / open-state / rating.
+   Distinct visual treatment per item so it never reads as an "A · B · C" string. */
+.spec {
+  display: flex;
+  align-items: center;
+  gap: var(--s5);
+  margin-top: var(--s2);
+  color: var(--ink-dim);
+}
+.spec .rating {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* — Data table ————————————————————————————————————————— */
+.table-wrap {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text);
+}
+
+thead th {
+  background: var(--surface);
+  color: var(--ink-dim);
+  font-weight: 500;
+  font-size: var(--text-sm);
+  text-align: left;
+  padding: var(--s3) var(--s4);
+}
+
+tbody td {
+  padding: var(--s3) var(--s4);
+  border-top: 1px solid var(--rule);
+  vertical-align: middle;
+}
+
+tbody tr:hover td { background: var(--accent-weak); }
+
+th.num, td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+a.row-link { color: var(--ink); font-weight: 500; }
+a.row-link:hover { color: var(--accent); }
+
+/* — Status pill ———————————————————————————————————————————
+   Template writes:  <span class="status" data-status="preparing">Preparing</span>
+   The data-status value is the raw OrderStatus enum value. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: 0.15em 0.6em;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--_status, var(--ink-dim));
+  background: color-mix(in srgb, var(--_status, var(--ink-dim)) 12%, transparent);
+}
+.status::before {
+  content: "";
+  width: 0.45em;
+  height: 0.45em;
+  border-radius: 50%;
+  background: currentColor;
+}
+.status[data-status="placed"]           { --_status: var(--status-placed); }
+.status[data-status="preparing"]        { --_status: var(--status-preparing); }
+.status[data-status="out_for_delivery"] { --_status: var(--status-out_for_delivery); }
+.status[data-status="delivered"]        { --_status: var(--status-delivered); }
+.status[data-status="cancelled"]        { --_status: var(--status-cancelled); }
+
+/* — Empty state ———————————————————————————————————————————
+   "An empty screen is an invitation to act" — say what's missing plainly. */
+.empty {
+  padding: var(--s7) var(--s4);
+  text-align: center;
+  color: var(--ink-dim);
+  border: 1px dashed var(--rule);
+  border-radius: var(--radius);
+}
+
+/* — Small screens ————————————————————————————————————————— */
+@media (max-width: 40rem) {
+  .page { padding: var(--s5) var(--s4); }
+  .site-header { gap: var(--s4); }
+  .table-wrap { overflow-x: auto; }
+  table { min-width: 34rem; }
+}
