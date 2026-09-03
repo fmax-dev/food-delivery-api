@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent

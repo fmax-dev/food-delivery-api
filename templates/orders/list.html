@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Orders | Food Delivery{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <h1>Orders</h1>
+    <span class="count">{{ orders|length }}</span>
+</div>
+
+{% if orders %}
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Restaurant</th>
+                <th>Status</th>
+                <th class="num">Total</th>
+                <th>Delivery address</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.customer_name }}</td>
+                <td>{{ restaurant_names.get(order.restaurant_id, "Unknown restaurant") }}</td>
+                <td><span class="status" data-status="{{ order.status.value }}">{{ order.status.value|replace("_", " ")|title }}</span></td>
+                <td class="num">${{ "%.2f"|format(order.total_price) }}</td>
+                <td>{{ order.delivery_address }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="empty">No orders found.</p>
+{% endif %}
+{% endblock %}

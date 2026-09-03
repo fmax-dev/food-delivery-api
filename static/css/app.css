@@ -143,6 +143,11 @@ a:hover { text-decoration: underline; }
   margin-bottom: var(--s5);
 }
 
+/* Vertical rhythm inside the content column — h2 sections need air above
+   them (everything is reset to margin:0), but not when a page opens on one. */
+.page h2 { margin-top: var(--s6); }
+.page > :first-child { margin-top: 0; }
+
 .count {
   font-size: var(--text-sm);
   color: var(--ink-dim);

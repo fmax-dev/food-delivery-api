@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ restaurant.name }} | Food Delivery{% endblock %}
+
+{% block content %}
+<a class="back-link" href="/restaurants">&larr; All restaurants</a>
+<div class="page-head">
+    <h1>{{ restaurant.name }}</h1>
+</div>
+<div class="spec">
+    <span>{{ restaurant.cuisine_type }}</span>
+    <span>{{ "Open" if restaurant.is_open else "Closed" }}</span>
+    <span class="rating">{{ restaurant.rating if restaurant.rating is not none else "No rating" }}</span>
+</div>
+
+<h2>Orders <span class="count">{{ orders|length }}</span></h2>
+{% if orders %}
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Status</th>
+                <th class="num">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.customer_name }}</td>
+                <td>{{ order.items_summary }}</td>
+                <td><span class="status" data-status="{{ order.status.value }}">{{ order.status.value|replace("_", " ")|title }}</span></td>
+                <td class="num">${{ "%.2f"|format(order.total_price) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="empty">No orders for this restaurant.</p>
+{% endif %}
+{% endblock %}

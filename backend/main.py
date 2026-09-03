@@ -7,6 +7,7 @@ from scalar_fastapi import get_scalar_api_reference
 
 from backend.api.router import api_router
 from backend.db.session import create_db_tables
+from backend.web.router import web_router
 from backend.web.template import BASE_DIR
 
 
@@ -19,6 +20,7 @@ app = FastAPI(lifespan=lifespan_handler)
 
 
 app.include_router(api_router)
+app.include_router(web_router)
 
 
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")

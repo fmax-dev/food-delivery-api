@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Restaurants | Food Delivery{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <h1>Restaurants</h1>
+    <span class="count">{{ restaurants|length }}</span>
+</div>
+
+{% if restaurants %}
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Cuisine</th>
+                <th>Open</th>
+                <th class="num">Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for restaurant in restaurants %}
+            <tr>
+                <td><a class="row-link" href="/restaurants/{{ restaurant.id }}">{{ restaurant.name }}</a></td>
+                <td>{{ restaurant.cuisine_type }}</td>
+                <td>{{ "Open" if restaurant.is_open else "Closed" }}</td>
+                <td class="num">{{ restaurant.rating if restaurant.rating is not none else "-" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="empty">No restaurants found.</p>
+{% endif %}
+{% endblock %}

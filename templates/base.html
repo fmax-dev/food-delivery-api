@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Food Delivery{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+    <header class="site-header">
+        <a class="site-header__brand" href="/restaurants">Food Delivery</a>
+        <nav class="site-nav" aria-label="Main navigation">
+            <a href="/restaurants" {% if request.url.path.startswith('/restaurants') %}aria-current="page"{% endif %}>Restaurants</a>
+            <a href="/orders" {% if request.url.path.startswith('/orders') %}aria-current="page"{% endif %}>Orders</a>
+        </nav>
+    </header>
+    <main class="page">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
