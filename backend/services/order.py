@@ -7,6 +7,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from backend.models.order import Order, OrderStatus
 from backend.models.restaurant import Restaurant
 from backend.schemas.order import OrderCreate
+from backend.db.session import async_session
 
 
 class OrderService:
@@ -16,6 +17,11 @@ class OrderService:
     # Get an Order
     async def get_order(self, id: int) -> Order | None:
         return await self.session.get(Order, id)
+
+    # Get order in new session
+    async def get_order_in_session(self, id: int) -> Order | None:
+        async with async_session() as session:
+            return await session.get(Order, id)
 
     # latest Order
     async def get_latest(self) -> Order | None:

@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi import APIRouter, HTTPException, Query, status
 
 from backend.api.dependencies import OrderServiceDep
@@ -24,6 +26,27 @@ async def get_latest_order(service: OrderServiceDep):
         )
 
     return latest_orders
+
+
+# Fetch multiple orders at the same time
+@order_router.get("/bulk", response_model=list[OrderRead])
+async def get_several_orders(
+    service: OrderServiceDep,
+    ids: list[int] = Query(...),
+):
+    async with asyncio.TaskGroup() as tg:
+        tasks = [
+            tg.create_task(service.get_order_in_session(order_id))
+            for order_id in ids
+        ]
+
+    orders = []
+    for task in tasks:
+        order = task.result()
+        if order is not None:
+            orders.append(order)
+
+    return orders
 
 
 # Get a given order
